@@ -1,4 +1,4 @@
-Favour Obiorah 🆙 UXUY, [16/08/2025 6:29 pm]
+Favour Obiorah 🆙 UXUY, [16/08/2025 6:32 pm]
 // ===============================
 // Dynamic Quote Generator Script
 // ===============================
@@ -60,7 +60,7 @@ function addQuote() {
   quotes.push(newQuote);
   saveQuotes();
   populateCategories();
-  alert("Quote added successfully!");
+  showNotification("Quote added successfully!");
 
   // Post to mock server
   postQuoteToServer(newQuote);
@@ -115,7 +115,7 @@ function importFromJsonFile(event) {
     quotes.push(...importedQuotes);
     saveQuotes();
     populateCategories();
-    alert("Quotes imported successfully!");
+    showNotification("Quotes imported successfully!");
   };
   fileReader.readAsText(event.target.files[0]);
 }
@@ -124,14 +124,14 @@ function importFromJsonFile(event) {
 // Simulated Server Interaction
 // ==============================
 
+Favour Obiorah 🆙 UXUY, [16/08/2025 6:32 pm]
 // Fetch quotes from server (simulation)
 async function fetchQuotesFromServer() {
   try {
     const response = await fetch("https://jsonplaceholder.typicode.com/posts");
     const data = await response.json();
 
-Favour Obiorah 🆙 UXUY, [16/08/2025 6:29 pm]
-// Simulate server sending back quote-like objects
+    // Simulate server sending back quote-like objects
     const serverQuotes = data.slice(0, 5).map(post => ({
       text: post.title,
       category: "Server"
@@ -152,7 +152,7 @@ async function postQuoteToServer(quote) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(quote)
     });
-    console.log("Quote synced with server:", quote);
+    showNotification("Quote synced with server!");
   } catch (error) {
     console.error("Error posting to server:", error);
   }
@@ -173,12 +173,41 @@ async function syncQuotes() {
     saveQuotes();
     populateCategories();
 
-    console.log("Quotes synced with server. Local storage updated.");
+    showNotification("Quotes synced with server!");
   }
 }
 
 // Run sync every 60 seconds
 setInterval(syncQuotes, 60000);
+
+// ==============================
+// Notifications
+// ==============================
+function showNotification(message) {
+  let notificationBar = document.getElementById("notificationBar");
+
+  if (!notificationBar) {
+    notificationBar = document.createElement("div");
+    notificationBar.id = "notificationBar";
+    notificationBar.style.position = "fixed";
+    notificationBar.style.bottom = "10px";
+    notificationBar.style.right = "10px";
+    notificationBar.style.background = "#4caf50";
+    notificationBar.style.color = "#fff";
+    notificationBar.style.padding = "10px 15px";
+    notificationBar.style.borderRadius = "5px";
+    notificationBar.style.boxShadow = "0px 2px 6px rgba(0,0,0,0.2)";
+    notificationBar.style.zIndex = "1000";
+    document.body.appendChild(notificationBar);
+  }
+
+  notificationBar.innerText = message;
+  notificationBar.style.opacity = "1";
+
+  setTimeout(() => {
+    notificationBar.style.opacity = "0";
+  }, 3000);
+}
 
 // ==============================
 // Initialize on Load
