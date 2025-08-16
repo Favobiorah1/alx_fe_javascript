@@ -1,56 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dynamic Quote Generator</title>
-  <style>
-    body { font-family: Arial, sans-serif; background:#f6f7fb; margin:0; padding:24px; }
-    h1 { text-align:center; margin-bottom:12px; }
-    .container { max-width:860px; margin:0 auto; }
-    #quoteDisplay {
-      background:#fff; padding:18px 20px; border-radius:12px; min-height:64px;
-      box-shadow:0 6px 16px rgba(0,0,0,.06); font-size:18px; font-style:italic;
-    }
-    .controls, .import-export, .filter-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; align-items:center; }
-    button {
-      border:0; border-radius:8px; padding:10px 14px; cursor:pointer; background:#2563eb; color:#fff;
-    }
-    button.secondary { background:#64748b; }
-    button:hover { filter:brightness(.95); }
-    select, input[type="file"] {
-      padding:9px 10px; border-radius:8px; border:1px solid #cbd5e1; background:#fff;
-    }
-    .inline-note { color:#475569; font-size:13px; }
-    .form-container { margin-top:16px; display:flex; gap:8px; flex-wrap:wrap; }
-    .form-container input { padding:10px; border:1px solid #cbd5e1; border-radius:8px; flex:1 1 260px; }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Dynamic Quote Generator</h1>
+  <h1>Dynamic Quote Generator</h1>
 
-    <div id="quoteDisplay">Click “Show New Quote” to begin.</div>
+  <!-- Quote Display -->
+  <div id="quoteDisplay"></div>
+  <button id="newQuote">Show New Quote</button>
 
-    <div class="controls">
-      <button id="newQuote">Show New Quote</button>
+  <!-- Category Filter -->
+  <div>
+    <label for="categoryFilter">Filter by Category:</label>
+    <select id="categoryFilter"></select>
+  </div>
 
-      <div class="filter-row">
-        <label for="categoryFilter" class="inline-note">Filter:</label>
-        <select id="categoryFilter" title="Filter by category"></select>
-      </div>
-    </div>
+  <!-- Add Quote Form (generated dynamically in JS, or could be kept here if preferred) -->
+  <div id="formContainer"></div>
 
-    <!-- Import / Export -->
-    <div class="import-export">
-      <button id="exportBtn" class="secondary" title="Download your quotes as JSON">Export Quotes (JSON)</button>
-
-      <!-- Required by your spec -->
-      <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
-      <span class="inline-note">Session remembers your last viewed quote until this tab closes.</span>
-    </div>
-
-    <!-- Add-Quote form is generated dynamically by JS: createAddQuoteForm() -->
+  <!-- Import / Export JSON -->
+  <div>
+    <button id="exportBtn">Export Quotes (JSON)</button>
+    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
   </div>
 
   <script src="script.js"></script>
