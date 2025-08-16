@@ -8,12 +8,10 @@ let quotes = [
 // DOM Elements
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
-const addQuoteBtn = document.getElementById("addQuoteBtn");
 const categoryFilter = document.getElementById("categoryFilter");
 
 // Populate category dropdown
 function updateCategoryFilter() {
-  // Get unique categories
   const categories = [...new Set(quotes.map(q => q.category))];
   categoryFilter.innerHTML = <option value="all">All</option>;
   categories.forEach(cat => {
@@ -28,7 +26,7 @@ function updateCategoryFilter() {
 function showRandomQuote() {
   let filteredQuotes = quotes;
   const selectedCategory = categoryFilter.value;
-  
+
   if (selectedCategory !== "all") {
     filteredQuotes = quotes.filter(q => q.category === selectedCategory);
   }
@@ -52,10 +50,9 @@ function addQuote() {
     return;
   }
 
-  // Add new quote
   quotes.push({ text: newText, category: newCategory });
 
-  // Update dropdown
+  // Update category filter dropdown
   updateCategoryFilter();
 
   // Clear input fields
@@ -65,10 +62,36 @@ function addQuote() {
   alert("New quote added successfully!");
 }
 
+// Dynamically create the Add Quote Form
+function createAddQuoteForm() {
+  const formContainer = document.createElement("div");
+  formContainer.classList.add("form-container");
+
+  const inputText = document.createElement("input");
+  inputText.id = "newQuoteText";
+  inputText.type = "text";
+  inputText.placeholder = "Enter a new quote";
+
+  const inputCategory = document.createElement("input");
+  inputCategory.id = "newQuoteCategory";
+  inputCategory.type = "text";
+  inputCategory.placeholder = "Enter quote category";
+
+  const addBtn = document.createElement("button");
+  addBtn.textContent = "Add Quote";
+  addBtn.addEventListener("click", addQuote);
+
+  formContainer.appendChild(inputText);
+  formContainer.appendChild(inputCategory);
+  formContainer.appendChild(addBtn);
+
+  document.body.appendChild(formContainer);
+}
+
 // Event Listeners
 newQuoteBtn.addEventListener("click", showRandomQuote);
-addQuoteBtn.addEventListener("click", addQuote);
 categoryFilter.addEventListener("change", showRandomQuote);
 
-// Initialize dropdown
+// Initialize
 updateCategoryFilter();
+createAddQuoteForm(); // ✅ build the form dynamically
