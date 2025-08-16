@@ -1,30 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dynamic Quote Generator</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; background:#f6f7fb; margin:0; padding:24px; }
+    .container { max-width: 960px; margin: 0 auto; }
+    h1 { margin: 0 0 12px 0; }
+    #quoteDisplay {
+      background:#fff; padding:16px 18px; border-radius:12px; min-height:60px;
+      box-shadow:0 6px 16px rgba(0,0,0,.06); font-size:18px; font-style:italic;
+    }
+    .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:12px; }
+    button {
+      border:0; border-radius:8px; padding:10px 14px; cursor:pointer; background:#2563eb; color:#fff;
+    }
+    button.secondary { background:#64748b; }
+    button.ghost { background:#e2e8f0; color:#0f172a; }
+    select, input[type="file"], input[type="text"] {
+      padding:9px 10px; border-radius:8px; border:1px solid #cbd5e1; background:#fff;
+    }
+    .inline { font-size:13px; color:#475569; }
+    .form-container { margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+    .form-container input { flex:1 1 260px; }
+
+    /* Toast-ish notifications */
+    #notifications { position: fixed; right: 16px; bottom: 16px; display: grid; gap: 8px; z-index: 50; }
+    .toast { background:#0f172a; color:#fff; padding:10px 12px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,.15); }
+    .toast.warn { background:#b45309; } .toast.error { background:#b91c1c; } .toast.info { background:#334155; } .toast.success { background:#065f46; }
+
+    /* Modal */
+    #conflictModal { position: fixed; inset: 0; display:none; place-items:center; background: rgba(0,0,0,.4); z-index: 60; }
+    #conflictModal.show { display:grid; }
+    .modal-card { max-width: 840px; width: calc(100% - 32px); background:#fff; border-radius:12px; padding:16px; box-shadow:0 10px 30px rgba(0,0,0,.25); }
+    .conflict-item { border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-top:10px; }
+    .conflict-item pre { background:#f8fafc; padding:8px; border-radius:8px; overflow:auto; }
+  </style>
 </head>
 <body>
-  <h1>Dynamic Quote Generator</h1>
+  <div class="container">
+    <h1>Dynamic Quote Generator</h1>
 
-  <!-- Quote Display -->
-  <div id="quoteDisplay"></div>
-  <button id="newQuote">Show New Quote</button>
+    <div id="quoteDisplay">Click “Show New Quote” to begin.</div>
 
-  <!-- Category Filter -->
-  <div>
-    <label for="categoryFilter">Filter by Category:</label>
-    <select id="categoryFilter"></select>
+    <div class="row">
+      <button id="newQuote">Show New Quote</button>
+
+      <label class="inline" for="categoryFilter">Filter:</label>
+      <select id="categoryFilter" onchange="filterQuotes()"></select>
+
+      <span class="inline">Sync: <strong id="syncStatus">Idle</strong></span>
+      <button id="syncNowBtn" class="ghost" title="Trigger a manual sync">Sync Now</button>
+      <button id="reviewConflictsBtn" class="secondary" style="display:none">Review Conflicts</button>
+    </div>
+
+    <div class="row">
+      <button id="exportBtn" class="secondary">Export Quotes (JSON)</button>
+      <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+      <span class="inline">Session remembers your last viewed quote until this tab closes.</span>
+    </div>
+
+    <!-- Add-Quote form is injected by JS (createAddQuoteForm) -->
+    <div id="formMount"></div>
   </div>
 
-  <!-- Add Quote Form (generated dynamically in JS, or could be kept here if preferred) -->
-  <div id="formContainer"></div>
+  <div id="notifications"></div>
 
-  <!-- Import / Export JSON -->
-  <div>
-    <button id="exportBtn">Export Quotes (JSON)</button>
-    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+  <!-- Conflict Modal -->
+  <div id="conflictModal">
+    <div class="modal-card">
+      <h3>Conflicts Detected</h3>
+      <p class="inline">Server took precedence automatically. You can override decisions below and apply your choices.</p>
+      <div id="conflictList"></div>
+      <div class="row" style="justify-content:flex-end; margin-top:12px;">
+        <button id="applyConflictChoices">Apply Choices</button>
+        <button id="closeConflictModal" class="ghost">Close</button>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
